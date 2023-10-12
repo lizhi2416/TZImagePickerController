@@ -348,6 +348,9 @@
 // Decide asset can be selected
 // 决定照片能否被选中
 - (BOOL)isAssetCanBeSelected:(PHAsset *)asset;
+// 决定是否外部自定义点击拍照按钮逻辑
+- (BOOL)isCustomTakePhoto:(dispatch_block_t)block;
+
 @end
 
 

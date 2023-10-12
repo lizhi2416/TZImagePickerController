@@ -802,12 +802,12 @@ static CGFloat itemMargin = 5;
         [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
             if (granted) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self pushImagePickerController];
+                    [self judgeIsCustomTakePhoto];
                 });
             }
         }];
     } else {
-        [self pushImagePickerController];
+        [self judgeIsCustomTakePhoto];
     }
 }
 
@@ -821,6 +821,21 @@ static CGFloat itemMargin = 5;
     }
 }
 
+- (void)judgeIsCustomTakePhoto {
+    // 判断是否外部处理拍照逻辑
+    TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
+    
+    if (tzImagePickerVc.pickerDelegate && [tzImagePickerVc.pickerDelegate respondsToSelector:@selector(isCustomTakePhoto:)]) {
+        __weak typeof(self) weakSelf = self;
+        BOOL isCustomTakePhoto = [tzImagePickerVc.pickerDelegate isCustomTakePhoto:^{
+            [weakSelf pushImagePickerController];
+        }];
+        if (isCustomTakePhoto) {
+            return;
+        }
+    }
+    [self pushImagePickerController];
+}
 // 调用相机
 - (void)pushImagePickerController {
     // 提前定位
